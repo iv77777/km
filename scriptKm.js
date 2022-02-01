@@ -14,20 +14,34 @@ const folderImgJs = document.querySelector('#folderImg_js');
 const popupInputResultKmJs = document.querySelector('#popupInputResultKm_js');
 
 
+const keyName = "keyNameFuel";
 
-
+// keyNameFuel
+// consumption_js
+// "consumption_js": "12"
 
 // ********************<< localStorage >>*****************************************************
 // Записуваем расход в локал localStorage
 function addlocalStorage(value) {
-  let ObjectValueKm = [{ valueKm: '' }];
 
-  ObjectValueKm[0].valueKm = value;
-
-  // переобразовуем масив valueKmObject в строку и записываем в valueKmObjectText
-  let valueKmObjectText = JSON.stringify(ObjectValueKm);
-  // добавляем valueKmObjectText в localStorage
-  localStorage.setItem("usObjectKm", valueKmObjectText);
+  // Получает обект з LocalStorage
+  const keyValueKm = localStorage.getItem(keyName);
+  if (keyValueKm !== null) {
+    //переобразовуем из строки в масив и возвращаем
+    const ObjectValueKm = JSON.parse(keyValueKm);
+    ObjectValueKm.consumption_js = value;
+    // переобразовуем масив valueKmObject в строку и записываем в valueKmObjectText
+    let valueKmObjectText = JSON.stringify(ObjectValueKm);
+    // добавляем valueKmObjectText в localStorage
+    localStorage.setItem(keyName, valueKmObjectText);
+  } else{
+    let ObjectValueKm = {};
+    ObjectValueKm.consumption_js = value;
+    // переобразовуем масив valueKmObject в строку и записываем в valueKmObjectText
+    let valueKmObjectText = JSON.stringify(ObjectValueKm);
+    // добавляем valueKmObjectText в localStorage
+    localStorage.setItem(keyName, valueKmObjectText);
+  }
 }
 
 // Получает обект з LocalStorage
@@ -41,7 +55,7 @@ const getLocalStorage = function(keyName) {
     return JSON.parse(keyValueKm);
   }
   // если localStorage пустой то возвращам пустой масив
-  return [];
+  return false;
 }
 
 
@@ -53,9 +67,9 @@ var rounded = function (number) {
 }
 
 //при загрузке странице, если localStorage не пустой то
-if (getLocalStorage('usObjectKm').length){
+if (getLocalStorage(keyName)){
   // добавляет значения в инпут попапа
-  updateValue(getLocalStorage('usObjectKm')[0].valueKm);
+  updateValue(getLocalStorage(keyName).consumption_js);
   // показуем галочку
   folderCounterJs.style.opacity = '1';
 }
